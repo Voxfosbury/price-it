@@ -4,21 +4,44 @@ import { ArrowRightIcon, CheckIcon } from "lucide-react"
 import Link from "next/link"
 import { NeonIcon } from "./_icons/Neon"
 import { ClerkIcon } from "./_icons/Clerk"
-import { subscriptionTiersInOrder } from "@/data/subscriptionTiers"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { formatCompactNumber } from "@/lib/formatters"
 import { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 import { BrandLogo } from "@/components/BrandLogo"
 
 export default function HomePage() {
+  // Define subscription tiers statically
+  const subscriptionTiers = [
+    {
+      name: "Basic",
+      priceInCents: 1999,
+      maxNumberOfVisits: 1000,
+      maxNumberOfProducts: 5,
+      canRemoveBranding: false,
+      canAccessAnalytics: false,
+      canCustomizeBanner: false,
+    },
+    {
+      name: "Standard",
+      priceInCents: 4999,
+      maxNumberOfVisits: 5000,
+      maxNumberOfProducts: 20,
+      canRemoveBranding: true,
+      canAccessAnalytics: true,
+      canCustomizeBanner: true,
+    },
+    {
+      name: "Premium",
+      priceInCents: 9999,
+      maxNumberOfVisits: 10000,
+      maxNumberOfProducts: 50,
+      canRemoveBranding: true,
+      canAccessAnalytics: true,
+      canCustomizeBanner: true,
+    },
+  ]
+
   return (
     <>
       <section className="min-h-screen bg-[radial-gradient(hsl(0,72%,65%,40%),hsl(24,62%,73%,40%),hsl(var(--background))_60%)] flex items-center justify-center text-center text-balance flex-col gap-8 px-4">
@@ -35,6 +58,7 @@ export default function HomePage() {
           </Button>
         </SignUpButton>
       </section>
+
       <section className="bg-primary text-primary-foreground">
         <div className="container py-16 flex flex-col gap-16 px-8 md:px-16">
           <h2 className="text-3xl text-center text-balance">
@@ -47,43 +71,21 @@ export default function HomePage() {
             <Link href="https://clerk.com">
               <ClerkIcon />
             </Link>
-            <Link href="https://neon.tech">
-              <NeonIcon />
-            </Link>
-            <Link href="https://clerk.com">
-              <ClerkIcon />
-            </Link>
-            <Link href="https://neon.tech">
-              <NeonIcon />
-            </Link>
-            <Link href="https://clerk.com">
-              <ClerkIcon />
-            </Link>
-            <Link href="https://neon.tech">
-              <NeonIcon />
-            </Link>
-            <Link href="https://clerk.com">
-              <ClerkIcon />
-            </Link>
-            <Link href="https://neon.tech">
-              <NeonIcon />
-            </Link>
-            <Link className="md:max-xl:hidden" href="https://clerk.com">
-              <ClerkIcon />
-            </Link>
           </div>
         </div>
       </section>
+
       <section id="pricing" className=" px-8 py-16 bg-accent/5">
         <h2 className="text-4xl text-center text-balance font-semibold mb-8">
           Pricing software which pays for itself 20x over
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-screen-xl mx-auto">
-          {subscriptionTiersInOrder.map(tier => (
+          {subscriptionTiers.map(tier => (
             <PricingCard key={tier.name} {...tier} />
           ))}
         </div>
       </section>
+
       <footer className="container pt-16 pb-8 flex flex-col sm:flex-row gap-8 sm:gap-4 justify-between items-start">
         <Link href="/">
           <BrandLogo />
@@ -165,7 +167,15 @@ function PricingCard({
   canRemoveBranding,
   canAccessAnalytics,
   canCustomizeBanner,
-}: (typeof subscriptionTiersInOrder)[number]) {
+}: {
+  name: string
+  priceInCents: number
+  maxNumberOfVisits: number
+  maxNumberOfProducts: number
+  canRemoveBranding: boolean
+  canAccessAnalytics: boolean
+  canCustomizeBanner: boolean
+}) {
   const isMostPopular = name === "Standard"
 
   return (
@@ -213,13 +223,7 @@ function PricingCard({
   )
 }
 
-function Feature({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
+function Feature({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <CheckIcon className="size-4 stroke-accent bg-accent/25 rounded-full p-0.5" />
